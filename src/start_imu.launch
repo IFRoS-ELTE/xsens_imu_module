@@ -1,0 +1,11 @@
+<launch>
+    <!-- Use groups if you want to launch several nodes for multiple devices.
+    Make sure to use different param files for each sensor. -->
+    <!-- <group ns="sensor_1"> -->
+        <node  name="xsens_mti_node" pkg="xsens_mti_driver" type="xsens_mti_node" output="screen">
+            <rosparam command="load" file="/root/ros_ws/src/xsens_mti_params.yaml" />
+        </node>
+ <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args= "0 0 0.5 0 0 0 base_link imu_link 1000"/>
+
+    <!-- </group> -->
+</launch>
