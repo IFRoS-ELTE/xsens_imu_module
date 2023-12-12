@@ -1,15 +1,16 @@
-# This is an auto generated Dockerfile for ros:ros-base
-# generated from docker_images_ros2/create_ros_image.Dockerfile.em
+# Use the ROS Noetic base image on Ubuntu Focal
 FROM ros:noetic-ros-base-focal
 
+# Set the ROS distribution environment variable
 ENV ROS_DISTRO=noetic
 
+# Set the ROS root directory
 ENV ROS_ROOT=/opt/ros/${ROS_DISTRO}
 
-# Set DEBIAN_FRONTEND to noninteractive
+# Set DEBIAN_FRONTEND to noninteractive to avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# install tools, SW needed for GUI output and ROS dependencies
+# Install essential tools, libraries, and ROS dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
         build-essential \
         git \
@@ -29,19 +30,20 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && apt-get clean \ 
     && rm -rf /var/lib/apt/lists/*
 
-# Download the xsens MT Software Suite
+# Download and install the Xsens MT Software Suite
+# IMPORTANT: This downloads the MT Software Suite for Linux x86. If you want to deploy this on the Pomona robot, you will need the ARM. -> research how you can get it or use the driver on the host if it is already installed!
 RUN wget https://www.xsens.com/hubfs/Downloads/Software/MTSS/Releases/2022.0.0/MT_Software_Suite_linux-x86_2022.0_b7085_r119802.tar.gz \
     && tar -xzvf MT_Software_Suite_linux-x86_2022.0_b7085_r119802.tar.gz \
     && ./MT_Software_Suite_linux-x86_2022.0/mtsdk_linux-x86_2022.0.sh
 
-# Source setup.bash
+# Add the source setup.bash command to the user's bashrc
 RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc
 
 # Copy the ros_entrypoint.sh script from ros:ros-base
 COPY ros_entrypoint.sh /
 RUN chmod +x /ros_entrypoint.sh
 
-# Set the ros_entrypoint.sh script as the entry point
+# Set the ros_entrypoint.sh script as the entry point for the container
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
 # Create a new workspace folder for ROS2

@@ -1,22 +1,26 @@
 version: "3.9"
 services:
-  # This defines the name of the service. make sure to change it to your own name
+  # Define the name of the ROS1 Xsens IMU service
   ros1_xsens_imu_service:
-    # This is the name of the image that will be used to build the container. "." means the Dockerfile is in the same directory as the docker-compose.yml file
+    # Use the Dockerfile in the same directory to build the container
     build: .
+    # Set the image name and tag
     image: ros1_xsens_imu_driver:latest
+    # Set the container name
     container_name: ros1_xsens_imu
-    #user: "1000:1000"  # Specify the user and group ID or name
-    # network_mode:"host" means the container uses the host network for networking - no need to expose ports or define IP addresses
+    # Uncomment and set user and group ID or name if needed
+    # user: "1000:1000"
+    # Use the host network for networking (no need to expose ports)
     network_mode: "host"
-    # Privileged mode enables the container to access the host's devices like USB ports
+    # Enable privileged mode to access host devices (e.g., USB ports)
     privileged: true
-    # The volumes section defines which directories are shared between the host and the container. The first path is the host path, the second path is the path inside the container
+    # Define volumes for sharing directories between host and container
     volumes:
       - ../src:/root/ros_ws/src
-    # tty:true enables the container to display GUIs
+    # Enable TTY for displaying GUIs
     tty: true
-    # The environment section defines environment variables that are passed to the container. DISPLAY is required for GUIs to work
+    # Define environment variables passed to the container
     environment:
       - DISPLAY
+    # Set the entrypoint to keep the container running
     entrypoint: ["tail", "-f", "/dev/null"]
